@@ -1,7 +1,7 @@
 {
   "name": "valite",
-  "version": "0.2.0",
-  "description": "",
+  "version": "0.2.1",
+  "description": "Truly simple, practical and light validator engine.",
   "cdn": "dist/valite.js",
   "main": "dist/valite.cjs.js",
   "types": "types/index.d.ts",

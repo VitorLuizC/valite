@@ -1,5 +1,5 @@
 /*!
- * valite v0.1.1
+ * valite v0.2.1
  * (c) 2018-present Vitor Luiz Cavalcanti <vitorluizc@outlook.com> (https://vitorluizc.github.io)
  * Released under the MIT License.
  */

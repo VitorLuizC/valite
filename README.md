@@ -1,5 +1,7 @@
 # valite
 
+## Truly simple, practical and light validator engine.
+
 [![Build Status][ci-badge]][ci]
 
 I spent some time looking for a validation module that was simple, practical and light. All I found were modules that promise simplicity, but deliver complex APIs; they promise lightness, but deliver very heavy dependencies; promise practicality, but deliver ready-made functions that do not meet our needs, and it is necessary to download new modules and configure messages to change language and validation behavior.
