@@ -1,10 +1,20 @@
 {
   "name": "valite",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "src/index.js",
+  "cdn": "dist/valite.js",
+  "main": "dist/valite.cjs.js",
+  "types": "types/index.d.ts",
+  "module": "dist/valite.es.js",
+  "files": [
+    "types/",
+    "dist/",
+    "LICENSE.md",
+    "README.md"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && bili src/index.js --formats cjs,umd,es --js buble --banner"
   },
   "repository": {
     "type": "git",
@@ -25,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/VitorLuizC/valite/issues"
   },
-  "homepage": "https://github.com/VitorLuizC/valite#readme"
+  "homepage": "https://github.com/VitorLuizC/valite#readme",
+  "devDependencies": {
+    "bili": "^3.1.1",
+    "typescript": "^2.8.3"
+  }
 }
