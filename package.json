@@ -1,6 +1,6 @@
 {
   "name": "valite",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "",
   "cdn": "dist/valite.js",
   "main": "dist/valite.cjs.js",
@@ -13,6 +13,7 @@
     "README.md"
   ],
   "scripts": {
+    "pretest": "npm run build",
     "test": "ava",
     "build": "tsc && bili src/index.js --formats cjs,umd,es --js buble --banner"
   },

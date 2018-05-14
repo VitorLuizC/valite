@@ -1,5 +1,7 @@
 # valite
 
+[![Build Status][ci-badge]][ci]
+
 I spent some time looking for a validation module that was simple, practical and light. All I found were modules that promise simplicity, but deliver complex APIs; they promise lightness, but deliver very heavy dependencies; promise practicality, but deliver ready-made functions that do not meet our needs, and it is necessary to download new modules and configure messages to change language and validation behavior.
 
 So I wrote `valite`, unlike all of them, it's just the _core_ needed to build your validations. It is asynchronous by default, as everything should be in JavaScript, and has an extremely simple and concise API.
@@ -53,4 +55,6 @@ Released under MIT license. You can see it [here][license].
 
 <!-- Links -->
 
-[license]: ./LICENSE
+[license]: ./LICENSE.md
+[ci]: https://travis-ci.org/VitorLuizC/valite
+[ci-badge]: https://travis-ci.org/VitorLuizC/valite.svg?branch=master
