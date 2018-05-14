@@ -1,6 +1,6 @@
 {
   "name": "valite",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "cdn": "dist/valite.js",
   "main": "dist/valite.cjs.js",
@@ -13,7 +13,7 @@
     "README.md"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava",
     "build": "tsc && bili src/index.js --formats cjs,umd,es --js buble --banner"
   },
   "repository": {
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/VitorLuizC/valite#readme",
   "devDependencies": {
+    "ava": "^0.25.0",
     "bili": "^3.1.1",
     "typescript": "^2.8.3"
   }

@@ -1,5 +1,5 @@
 /*!
- * valite v0.1.0
+ * valite v0.1.1
  * (c) 2018-present Vitor Luiz Cavalcanti <vitorluizc@outlook.com> (https://vitorluizc.github.io)
  * Released under the MIT License.
  */
@@ -11,6 +11,7 @@ var ValidatorError = (function (Error) {
   function ValidatorError(message) {
     Error.call(this, message);
     this.name = 'ValidatorError';
+    this.message = message;
   }
 
   if ( Error ) ValidatorError.__proto__ = Error;
@@ -22,10 +23,10 @@ var ValidatorError = (function (Error) {
 
 function isMessage(message) {
   var isEmpty = typeof message === 'string' && !message.trim();
-  var isWrong = message !== true || typeof message !== 'string';
+  var isWrong = message !== true && typeof message !== 'string';
   if (isWrong) { throw new ValidatorError('Should return true or a non-empty string.'); }
   if (isEmpty) { throw new ValidatorError('Empty validator message.'); }
-  return !message;
+  return message !== true;
 }
 
 function validate(value, validators) {
@@ -37,7 +38,7 @@ function validate(value, validators) {
     return Promise.resolve(Promise.all(validators.map(execute))).then(function ($await_1) {
       try {
         messages = $await_1;
-        message = messages.find(isMessage);
+        message = messages.find(isMessage) || null;
         return $return(message);
       } catch ($boundEx) {
         return $error($boundEx);
