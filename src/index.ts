@@ -20,4 +20,44 @@ async function validate (value: any, validators: Array<Validator> = []) {
   return message;
 }
 
-export { validate, Validator, ValidatorError, validate as default }
+function getProperty (object: object, property: string): any {
+  try {
+    const get = new Function('object', `return object.${property}`);
+    return get(object);
+  } catch (_) {
+    return;
+  }
+}
+
+type ValidatorSchema = { [property: string]: Array<Validator> };
+
+async function validateProperties <T extends ValidatorSchema> (
+  object: object,
+  schema: T
+): Promise<{ [property in keyof T]: string }> {
+  const execute = async ([ property, validators ]: [ string, Array<Validator> ]) => {
+    const value = getProperty(object, property);
+    return {
+      [property]: await validate(value, validators)
+    };
+  };
+  const errors = await Promise.all(Object.entries(schema).map(execute));
+  return Object.assign({}, ...errors) as { [property in keyof T]: string };
+}
+
+function isValid (error: string | { [property: string]: string }): boolean {
+  if (error === null || typeof error !== 'object')
+    return !isMessage(error as string);
+  const isError = (error) => typeof error === 'string';
+  const isValid = !Object.values(error as { [property: string]: string }).some(isError);
+  return isValid;
+}
+
+export {
+  isValid,
+  validate,
+  Validator,
+  ValidatorError,
+  ValidatorSchema,
+  validateProperties
+}
