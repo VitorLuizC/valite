@@ -1,11 +1,16 @@
 /*!
- * valite v0.3.0
+ * valite v0.3.1
  * (c) 2018-present Vitor Luiz Cavalcanti <vitorluizc@outlook.com> (https://vitorluizc.github.io)
  * Released under the MIT License.
  */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var getEntries = _interopDefault(require('object.entries'));
+var getValues = _interopDefault(require('object.values'));
 
 var ValidatorError = (function (Error) {
   function ValidatorError(message) {
@@ -77,7 +82,7 @@ function validateProperties(object, schema) {
       }, $error);
     });
     };
-    return Promise.resolve(Promise.all(Object.entries(schema).map(execute))).then(function ($await_4) {
+    return Promise.resolve(Promise.all(getEntries(schema).map(execute))).then(function ($await_4) {
       try {
         errors = $await_4;
         return $return(Object.assign.apply(Object, [ {} ].concat( errors )));
@@ -93,7 +98,7 @@ function isValid(error) {
 
   var isError = function (error) { return typeof error === 'string'; };
 
-  var isValid = !Object.values(error).some(isError);
+  var isValid = !getValues(error).some(isError);
   return isValid;
 }
 

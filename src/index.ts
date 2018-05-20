@@ -1,4 +1,6 @@
 import ValidatorError from './ValidatorError';
+import getEntries from 'object.entries';
+import getValues from 'object.values';
 
 type Validator = (value: any) => string | true | Promise<string | true>;
 
@@ -41,7 +43,7 @@ async function validateProperties <T extends ValidatorSchema> (
       [property]: await validate(value, validators)
     };
   };
-  const errors = await Promise.all(Object.entries(schema).map(execute));
+  const errors = await Promise.all(getEntries(schema).map(execute));
   return Object.assign({}, ...errors) as { [property in keyof T]: string };
 }
 
@@ -49,7 +51,7 @@ function isValid (error: string | { [property: string]: string }): boolean {
   if (error === null || typeof error !== 'object')
     return !isMessage(error as string);
   const isError = (error) => typeof error === 'string';
-  const isValid = !Object.values(error as { [property: string]: string }).some(isError);
+  const isValid = !getValues(error as { [property: string]: string }).some(isError);
   return isValid;
 }
 
