@@ -7,10 +7,10 @@
   "types": "types/index.d.ts",
   "module": "dist/valite.es.js",
   "files": [
-    "types/",
     "dist/",
-    "LICENSE.md",
-    "README.md"
+    "types/",
+    "README.md",
+    "LICENSE.md"
   ],
   "scripts": {
     "pretest": "npm run build",

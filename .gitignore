@@ -11,5 +11,7 @@ package-lock.json
 *.log
 *.log.*
 
-# JavaScript sources.
+# Generated sources & type definitions.
 src/*.js
+dist/
+types/
