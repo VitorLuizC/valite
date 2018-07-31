@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "module": "es2015",
     "target": "es2017",
+
+    // Module resolution settings.
+    "module": "es2015",
+    "allowSyntheticDefaultImports": true,
+
+    // Type definiton settings.
     "lib": [ "es2018" ],
     "declaration": true,
-    "declarationDir": "types/",
+    "declarationDir": "types/"
   },
-  "exclude": [
-    "types/",
-    "dist/"
-  ]
+  "exclude": [ "dist/", "types/", ]
 }

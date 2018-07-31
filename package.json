@@ -38,12 +38,12 @@
   },
   "homepage": "https://github.com/VitorLuizC/valite#readme",
   "devDependencies": {
+    "@types/object-keys": "^1.0.0",
     "ava": "^0.25.0",
     "bili": "^3.1.2",
     "typescript": "^2.8.3"
   },
   "dependencies": {
-    "object.entries": "^1.0.4",
-    "object.values": "^1.0.4"
+    "object-keys": "^1.0.12"
   }
 }
