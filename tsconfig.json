@@ -4,12 +4,14 @@
 
     // Module resolution settings.
     "module": "es2015",
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
 
     // Type definiton settings.
     "lib": [ "es2018" ],
+    "strict": true,
     "declaration": true,
     "declarationDir": "types/"
   },
-  "exclude": [ "dist/", "types/", ]
+  "exclude": [ "test/", "dist/", "types/" ]
 }

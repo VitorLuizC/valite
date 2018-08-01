@@ -18,68 +18,42 @@ npm install valite --save
 
 ## API
 
-The API is composed by a validation function, `validate`, a validation object function `validateProperties` and `isValid` which is a simple error checker.
+The API is composed by a validation function, `validate`, a validation object function `validateSchema` and `isValid` which is a simple error checker.
 
-- `validate` receives a value and a list of validations and returns the first obtained message or null if all the validations pass.
+### `validate`
 
-  ```ts
-  async function validate (value: any, validators: Validator[] = []): string | null;
-  ```
+Receives a value and a list of validations and returns the first obtained message or `null` if all the validations pass.
 
-- `validateProperties` receives an object and a validator schema and returns an error schema, this schema uses same properties as validator schema but their value are first obtained message or null if all the validations pass.
+```ts
+async function validate (value: any, validators: Array<Validator> = []): Message;
+```
 
-  ```ts
-  type ValidatorSchema = { [property: string]: Validator[] };
+### `validateSchema`
 
-  type ErrorSchema <T extends ValidatorSchema> = { [property in keyof T]: string | null };
+Receives an object and a validator schema and returns an error schema, this schema uses same properties as validator schema but their value are first obtained message or `null` if all the validations pass.
 
-  async function validateProperties <T extends ValidatorSchema> (object: object, schema: T): ErrorSchema<T>;
-  ```
+```ts
+type ValidatorSchema = { [property: string]: Validator[] };
 
-- `isValid` just check if `validate`/`validateProperties` result has no errors.
+type MessageSchema <T extends ValidatorSchema> = { [property in keyof T]: Message; };
 
-  ```ts
-  function isValid (error: null | string | { [property: string]: string | null }): boolean;
-  ```
+async function validateSchema <T extends ValidatorSchema> (object: object, schema: T): MessageSchema<T>;
+```
 
-- `Validation` is a function that receives the value and returns `true` if it is valid and a non-empty `string` message if invalid. Validations can be asynchronous and in this case they resolve to `Promise<true | string>`.
+### `isValid`
 
-  ```ts
-  type Validator = (value: any) => string | true | Promise<string | true>;
-  ```
+Check if `validate`/`validateSchema` payload has no errors.
 
-## Example
+```ts
+function isValid (error: Message | MessageSchema<any>): boolean;
+```
 
-```js
-import { validate } from 'valite';
+### `Validation`
 
-/**
- * A validator to check if value's length is between min & max arguments.
- * @param {number} min
- * @param {number} max
- * @returns {Validator}
- */
-function isLengthBetween (min, max) {
-  const message = `Is not between ${min} & ${max} characters.`;
-  return (value) => (value.length >= min && value.length <= max) || message;
-}
+A function that receives the value and returns `true` if it is valid and a non-empty `string` message if invalid. Validations can be asynchronous and in this case they resolve to `Promise<true | string>`.
 
-async function onSubmit () {
-  const code = document.querySelector('.js-code-field').value.trim();
-
-  const error = await validate(code, [
-    (value) => !!value || 'Code is required.',
-    (value) => /\D/.test(value) || 'Code should be numeric.',
-    isLengthBetween(4, 8)
-  ]);
-
-  if (error) {
-    alert(error);
-    return;
-  }
-
-  // ...
-}
+```ts
+type Validator = (value: any) => string | true | Promise<string | true>;
 ```
 
 ## License

@@ -1,6 +1,6 @@
 {
   "name": "valite",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Truly simple, practical and light validator engine.",
   "cdn": "dist/valite.js",
   "main": "dist/valite.cjs.js",
@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "pretest": "npm run build",
-    "test": "ava",
+    "test": "tsc test/index.ts --lib es2018 && ava",
     "build": "tsc && bili src/index.js --formats cjs,umd,es --js buble --banner"
   },
   "repository": {
@@ -38,12 +38,16 @@
   },
   "homepage": "https://github.com/VitorLuizC/valite#readme",
   "devDependencies": {
+    "@types/node": "^10.5.5",
+    "@types/object-assign": "^4.0.30",
     "@types/object-keys": "^1.0.0",
     "ava": "^0.25.0",
     "bili": "^3.1.2",
-    "typescript": "^2.8.3"
+    "typescript": "^3.0.1"
   },
   "dependencies": {
-    "object-keys": "^1.0.12"
+    "object-assign": "^4.1.1",
+    "object-keys": "^1.0.12",
+    "object-take": "^0.1.2"
   }
 }

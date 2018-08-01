@@ -1,66 +1,56 @@
 import keys from './keys';
+import take from 'object-take';
+import assign from 'object-assign';
+import { Message, MessageSchema, isMessage, isMessageSchema } from './message';
 import ValidatorError from './ValidatorError';
 
-type Validator = (value: any) => string | true | Promise<string | true>;
+export { Message, MessageSchema, ValidatorError };
 
-function isMessage (message: string | true): message is string {
-  const isEmpty = typeof message === 'string' && !message.trim();
-  const isWrong = message !== true && typeof message !== 'string';
+/**
+ * A function which receives a value and return true or an error message.
+ */
+export type Validator = (value: any) => string | true | Promise<string | true>;
 
-  if (isWrong)
-    throw new ValidatorError('Should return true or a non-empty string.');
-  if (isEmpty)
-    throw new ValidatorError('Empty validator message.');
-  return message !== true;
-}
+/**
+ * A schema of property names and their validators.
+ */
+export type ValidatorSchema = { [property: string]: Array<Validator>; };
 
-async function validate (value: any, validators: Array<Validator> = []) {
-  const execute = (validator: Validator) => validator(value);
-  const messages = await Promise.all(validators.map(execute));
-  const message = messages.find(isMessage) || null;
-  return message;
-}
+/**
+ * Execute concurrently validators on a value and return first error message.
+ * @param value
+ * @param validators
+ */
+export const validate = async (value: any, validators: Array<Validator> = []): Promise<Message> => {
+  const resolutions = validators.map((validator) => validator(value));
+  const [ message ] = (await Promise.all(resolutions)).filter(isMessage);
+  return (message || null) as Message;
+};
 
-function getProperty (object: object, property: string): any {
-  try {
-    const get = new Function('object', `return object.${property}`);
-    return get(object);
-  } catch (_) {
-    return;
-  }
-}
+/**
+ * Validate the whole schema concurrenly executing validators for every property
+ * and returning a mirror schema with first error message for every property.
+ * @param object
+ * @param schema
+ */
+export const validateSchema = async <T extends ValidatorSchema> (object: object, schema: T): Promise<MessageSchema<T>> => {
+  const errors = await Promise.all(keys(schema).map(
+    async (property: string) => ({
+      [property]: await validate(take(object, property), schema[property])
+    })
+  ));
 
-type ValidatorSchema = { [property: string]: Array<Validator> };
+  return assign.apply(null, errors) as MessageSchema<T>;
+};
 
-async function validateProperties <T extends ValidatorSchema> (
-  object: object,
-  schema: T
-): Promise<{ [property in keyof T]: string }> {
-  const execute = async (property) => {
-    const value = getProperty(object, property);
-    return {
-      [property]: await validate(value, schema[property])
-    };
-  };
-  const errors = await Promise.all(keys(schema).map(execute));
-  return Object.assign({}, ...errors) as { [property in keyof T]: string };
-}
-
-type ErrorSchema = { [property: string]: string; };
-
-function isValid (error: string | ErrorSchema): boolean {
-  if (error === null || typeof error !== 'object')
-    return !isMessage(error as string);
-  const isError = (property) => typeof error[property] === 'string';
-  const isValid = !keys(error as ErrorSchema).some(isError);
+/**
+ * Check if error message or error message schema is empty, and therefore valid.
+ * @param error
+ */
+export const isValid = (error: Message | MessageSchema<any>): boolean => {
+  if (!isMessageSchema(error))
+    return !isMessage(error);
+  const isError = (property: string) => typeof error[property] === 'string';
+  const isValid = !keys(error).some(isError);
   return isValid;
-}
-
-export {
-  isValid,
-  validate,
-  Validator,
-  ValidatorError,
-  ValidatorSchema,
-  validateProperties
-}
+};

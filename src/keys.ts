@@ -1,6 +1,14 @@
 import polyfill from 'object-keys';
 
 /**
- * Get a collection of object's properties.
+ * Object.keys function using generic inference.
  */
-export default (Object.keys || polyfill) as <T extends object>(object: T) => Array<keyof T>;
+type GetKeys = <T extends object> (object: T) => Array<Exclude<keyof T, number | symbol>>;
+
+/**
+ * Get a collection of object's properties.
+ * @param object
+ */
+const keys = (Object.keys || polyfill) as GetKeys;
+
+export default keys;
