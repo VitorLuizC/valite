@@ -1,8 +1,10 @@
 # valite
 
-## Truly simple, practical and light validator engine.
-
 [![Build Status][ci-badge]][ci]
+
+Truly simple, practical and light validator engine.
+
+## Motivation
 
 I spent some time looking for a validation module that was simple, practical and light. All I found were modules that promise simplicity, but deliver complex APIs; they promise lightness, but deliver very heavy dependencies; promise practicality, but deliver ready-made functions that do not meet our needs, and it is necessary to download new modules and configure messages to change language and validation behavior.
 
@@ -10,10 +12,13 @@ So I wrote `valite`, unlike all of them, it's just the _core_ needed to build yo
 
 ## Install
 
-`valite` is published under NPM registry, so you can install from any JavaScript/Node package manager.
+`valite` is published under NPM registry, so you can install from any package manager.
 
 ```sh
 npm install valite --save
+
+# Use this command for Yarn.
+yarn add valite
 ```
 
 ## API
@@ -54,6 +59,35 @@ A function that receives the value and returns `true` if it is valid and a non-e
 
 ```ts
 type Validator = (value: any) => string | true | Promise<string | true>;
+```
+
+## Usage
+
+```js
+import { validate, isValid } from 'valite';
+
+// ...
+
+const validators = [
+  (value) => !!value.trim() || 'E-Mail is a required.',
+  (value) => /^.+@.+\..+$/.test(value) || 'E-Mail is invalid',
+  async (value) => {
+    const isRegistered = await isAlreadyRegistered(value);
+    return !isRegistered || 'E-Mail is already registered.';
+  }
+];
+
+document.querySelector('.send').addEventListener('click', async (e) => {
+  const value = document.querySelector('.email').value;
+  const error = await validate(value, validators);
+
+  if (error) {
+    alert(error);
+    return;
+  }
+
+  await submitEMail(value);
+});
 ```
 
 ## License
