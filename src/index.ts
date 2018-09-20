@@ -1,5 +1,5 @@
-import take from 'object-take';
-import assign from 'object-assign';
+import get from 'get-value';
+import set from 'set-value';
 import { Message, MessageSchema, isMessage, isMessageSchema } from './message';
 import ValidatorError from './ValidatorError';
 
@@ -38,13 +38,15 @@ export const validate = async (value: any, validators: Array<Validator> = []): P
  * @param schema
  */
 export const validateSchema = async <T extends ValidatorSchema> (object: object, schema: T): Promise<MessageSchema<T>> => {
-  const errors = await Promise.all(keys(schema).map(
-    async (property: string) => ({
-      [property]: await validate(take(object, property), schema[property])
-    })
-  ));
-
-  return assign.apply(null, errors) as MessageSchema<T>;
+  const errors = Object.create(null) as MessageSchema<T>;
+  const toResolution = async (property: string): Promise<void> => {
+    const value = get(object, property);
+    const error = await validate(value, schema[property]);
+    set(errors, property, error);
+  };
+  const resolutions = keys(schema).map(toResolution);
+  await Promise.all(resolutions);
+  return errors;
 };
 
 /**
