@@ -5,7 +5,7 @@ const has = Function.call.bind(Object.prototype.hasOwnProperty);
 const validators = [
   (value) => !value || 'value is falsy',
   (value) => value === null || 'value is not null',
-  (value) => new Promise((resolve) => setTimeout(() => resolve(true), 250)) as Promise<true>
+  () => new Promise((resolve) => setTimeout(() => resolve(true), 250)) as Promise<true>
 ];
 
 test('validate returns null when is valid', async (context) => {
