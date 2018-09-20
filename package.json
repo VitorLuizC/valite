@@ -1,6 +1,6 @@
 {
   "name": "valite",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Truly simple, practical and light validator engine.",
   "cdn": "dist/valite.js",
   "main": "dist/valite.cjs.js",
@@ -39,11 +39,11 @@
   "homepage": "https://github.com/VitorLuizC/valite#readme",
   "devDependencies": {
     "@types/get-value": "^3.0.0",
-    "@types/node": "^10.5.5",
+    "@types/node": "^10.10.1",
     "@types/set-value": "^2.0.0",
     "ava": "^0.25.0",
     "bili": "^3.1.2",
-    "typescript": "^3.0.1"
+    "typescript": "^3.0.3"
   },
   "dependencies": {
     "get-value": "^3.0.1",
