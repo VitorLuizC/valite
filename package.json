@@ -40,14 +40,12 @@
   "devDependencies": {
     "@types/node": "^10.5.5",
     "@types/object-assign": "^4.0.30",
-    "@types/object-keys": "^1.0.0",
     "ava": "^0.25.0",
     "bili": "^3.1.2",
     "typescript": "^3.0.1"
   },
   "dependencies": {
     "object-assign": "^4.1.1",
-    "object-keys": "^1.0.12",
     "object-take": "^0.1.2"
   }
 }

@@ -1,10 +1,14 @@
-import keys from './keys';
 import take from 'object-take';
 import assign from 'object-assign';
 import { Message, MessageSchema, isMessage, isMessageSchema } from './message';
 import ValidatorError from './ValidatorError';
 
 export { Message, MessageSchema, ValidatorError };
+
+/**
+ * Get an Array of properties from a given object.
+ */
+const keys = Object.keys as <T = any> (object: T) => Extract<keyof T, string>[];
 
 /**
  * A function which receives a value and return true or an error message.
