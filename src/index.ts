@@ -1,7 +1,12 @@
 import get from 'get-value';
 import set from 'set-value';
-import { Message, MessageSchema, isMessage, isMessageSchema } from './message';
 import ValidatorError from './ValidatorError';
+import {
+  isMessage,
+  isMessageSchema,
+  Message,
+  MessageSchema,
+} from './message';
 
 export { Message, MessageSchema, ValidatorError };
 
@@ -25,10 +30,13 @@ export type ValidatorSchema = { [property: string]: Array<Validator>; };
  * @param value
  * @param validators
  */
-export const validate = async (value: any, validators: Array<Validator> = []): Promise<Message> => {
-  const resolutions = validators.map((validator) => validator(value));
-  const [ message ] = (await Promise.all(resolutions)).filter(isMessage);
-  return (message || null) as Message;
+export const validate = async (
+  value: any,
+  validators: Array<Validator> = [],
+): Promise<Message> => {
+  const execute = (validator: Validator) => validator(value);
+  const messages = await Promise.all(validators.map(execute));
+  return (messages.find(isMessage) || null) as Message;
 };
 
 /**
@@ -37,15 +45,17 @@ export const validate = async (value: any, validators: Array<Validator> = []): P
  * @param object
  * @param schema
  */
-export const validateSchema = async <T extends ValidatorSchema> (object: object, schema: T): Promise<MessageSchema<T>> => {
+export const validateSchema = async <T extends ValidatorSchema> (
+  object: object,
+  schema: T,
+): Promise<MessageSchema<T>> => {
   const errors = Object.create(null) as MessageSchema<T>;
   const toResolution = async (property: string): Promise<void> => {
     const value = get(object, property);
     const error = await validate(value, schema[property]);
     set(errors, property, error);
   };
-  const resolutions = keys(schema).map(toResolution);
-  await Promise.all(resolutions);
+  await Promise.all(keys(schema).map(toResolution));
   return errors;
 };
 
@@ -53,10 +63,11 @@ export const validateSchema = async <T extends ValidatorSchema> (object: object,
  * Check if error message or error message schema is empty, and therefore valid.
  * @param error
  */
-export const isValid = (error: Message | MessageSchema<any>): boolean => {
+export const isValid = (
+  error: Message | MessageSchema<any>,
+): boolean => {
   if (!isMessageSchema(error))
     return !isMessage(error);
   const isError = (property: string) => typeof error[property] === 'string';
-  const isValid = !keys(error).some(isError);
-  return isValid;
+  return !keys(error).some(isError);
 };
