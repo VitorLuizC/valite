@@ -2,7 +2,7 @@
 
 [![Build Status][ci-badge]][ci]
 
-Truly simple, practical and light validator engine.
+Concurrently execute your validators in a simple, practical and light validator engine.
 
 ## Motivation
 
