@@ -66,21 +66,33 @@ validate(mail, [
 
 Validates an `object` using validators from a schema and returns them in same structure.
 
+> Structure supports _dot notation_ for deep properties.
+
 ```js
 const entries = {
-  mail: document.querySelector('.mail').value,
-  password: document.querySelector('.password').value,
+  answer: document.querySelector('.answer').checked,
+  user: {
+    mail: document.querySelector('.mail').value,
+    password: document.querySelector('.password').value,
+  }
 };
 
 validateSchema(entries, {
-  mail: [
+  'answer': [
+    (answer) => Boolean(answer) || 'Terms should be accepted.',
+  ],
+  'user.mail': [
     (mail) => Boolean(value.trim()) || 'E-Mail is required.',
   ],
-  password: [
+  'user.password': [
     (password) => Boolean(password.trim()) || 'Password is required.',
   ]
 });
-//=> Promise {{ mail: 'E-Mail is required', password: null }}
+//=> Promise {{
+//     'answer': null,
+//     'user.mail': 'E-Mail is required',
+//     'user.password': null
+//   }}
 ```
 
 #### `isValid`
