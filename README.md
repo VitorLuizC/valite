@@ -25,69 +25,73 @@ yarn add valite
 
 The API is composed by a validation function, `validate`, a validation object function `validateSchema` and `isValid` which is a simple error checker.
 
-### `validate`
+#### `Validator`
 
-Receives a value and a list of validations and returns the first obtained message or `null` if all the validations pass.
-
-```ts
-async function validate (value: any, validators: Array<Validator> = []): Message;
-```
-
-### `validateSchema`
-
-Receives an object and a validator schema and returns an error schema, this schema uses same properties as validator schema but their value are first obtained message or `null` if all the validations pass.
-
-```ts
-type ValidatorSchema = { [property: string]: Validator[] };
-
-type MessageSchema <T extends ValidatorSchema> = { [property in keyof T]: Message; };
-
-async function validateSchema <T extends ValidatorSchema> (object: object, schema: T): MessageSchema<T>;
-```
-
-### `isValid`
-
-Check if `validate`/`validateSchema` payload has no errors.
-
-```ts
-function isValid (error: Message | MessageSchema<any>): boolean;
-```
-
-### `Validation`
-
-A function that receives the value and returns `true` if it is valid and a non-empty `string` message if invalid. Validations can be asynchronous and in this case they resolve to `Promise<true | string>`.
-
-```ts
-type Validator = (value: any) => string | true | Promise<string | true>;
-```
-
-## Usage
+Validators are functions that receives a value and returns a message or `true`.
 
 ```js
-import { validate, isValid } from 'valite';
+const isName = (name) => Boolean(name.trim()) || 'Name shouldn\'t be empty.';
+```
 
-// ...
+For TypeScript, `valite` exports `Validator` type to improve your code safety.
 
-const validators = [
-  (value) => !!value.trim() || 'E-Mail is a required.',
-  (value) => /^.+@.+\..+$/.test(value) || 'E-Mail is invalid',
-  async (value) => {
-    const isRegistered = await isAlreadyRegistered(value);
-    return !isRegistered || 'E-Mail is already registered.';
-  }
-];
+```ts
+import { Validator } from 'valite';
 
-document.querySelector('.send').addEventListener('click', async (e) => {
-  const value = document.querySelector('.email').value;
-  const error = await validate(value, validators);
+const isName: Validator = (name: string) => Boolean(name.trim()) || 'Name shouldn\'t be empty.';
+```
 
-  if (error) {
-    alert(error);
-    return;
-  }
+#### `validate`
 
-  await submitEMail(value);
+Executes validators **concurrently** and returns first obtained message or `null`.
+
+```js
+const mail = 'hi@capiwara.com.br';
+
+validate(mail, [
+  (mail) => Boolean(mail.trim()) || 'Mail is required.',
+  (mail) => /^.+@.+\..+$/.test(mail) || 'Mail is invalid',
+
+  // You can use async validators.
+  (mail) => (
+    services.isMailRegistered(mail)
+      .then((isRegistered) => isRegistered || 'Mail is already registered.')
+      .catch(() => 'Can\'t even verify if mail is already registered.')
+  )
+]);
+//=> Promise { 'E-Mail is already registered.' };
+```
+
+#### `validateSchema`
+
+Validates an `object` using validators from a schema and returns them in same structure.
+
+```js
+const entries = {
+  mail: document.querySelector('.mail').value,
+  password: document.querySelector('.password').value,
+};
+
+validateSchema(entries, {
+  mail: [
+    (mail) => Boolean(value.trim()) || 'E-Mail is required.',
+  ],
+  password: [
+    (password) => Boolean(password.trim()) || 'Password is required.',
+  ]
 });
+//=> Promise {{ mail: 'E-Mail is required', password: null }}
+```
+
+#### `isValid`
+
+Is a easy way to check if `validate` / `validateSchema` payload has no errors.
+
+```js
+const payload = await validateSchema(/* ... */);
+
+isValid(payload);
+//=> true
 ```
 
 ## License
