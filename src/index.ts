@@ -26,17 +26,25 @@ export type Validator = (value: any) => string | true | Promise<string | true>;
 export type ValidatorSchema = { [property: string]: Array<Validator>; };
 
 /**
- * Execute concurrently validators on a value and return first error message.
+ * Sequentially executes validators over the value. Returns the first error
+ * message or `null` otherwise.
  * @param value
  * @param validators
  */
 export const validate = async (
   value: any,
-  validators: Array<Validator> = [],
+  [validator, ...validators]: Array<Validator> = [],
 ): Promise<Message> => {
-  const execute = (validator: Validator) => validator(value);
-  const messages = await Promise.all(validators.map(execute));
-  return (messages.find(isMessage) || null) as Message;
+  try {
+    if (typeof validator !== 'function')
+      return null;
+    const message = await validator(value);
+    return isMessage(message) ? message : validate(value, validators);
+  } catch (error) {
+    if (error instanceof ValidatorError)
+      throw error;
+    throw new ValidatorError('Error on validator: ' + error && error.message);
+  }
 };
 
 /**
