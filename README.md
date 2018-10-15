@@ -23,7 +23,7 @@ yarn add valite
 
 ## API
 
-The API is composed by a validation function, `validate`, a validation object function `validateSchema` and `isValid` which is a simple error checker.
+The API is composed by a validation function, `validate`, a validation object function `validateObject` and `isValid` which is a simple error checker.
 
 #### `Validator`
 
@@ -62,7 +62,7 @@ validate(mail, [
 //=> Promise { 'E-Mail is already registered.' };
 ```
 
-#### `validateSchema`
+#### `validateObject`
 
 Validates an `object` using validators from a schema and returns them in same structure.
 
@@ -77,7 +77,7 @@ const entries = {
   }
 };
 
-validateSchema(entries, {
+validateObject(entries, {
   'answer': [
     (answer) => Boolean(answer) || 'Terms should be accepted.',
   ],
@@ -97,10 +97,10 @@ validateSchema(entries, {
 
 #### `isValid`
 
-Is a easy way to check if `validate` / `validateSchema` payload has no errors.
+Is a easy way to check if `validate` / `validateObject` payload has no errors.
 
 ```js
-const payload = await validateSchema(/* ... */);
+const payload = await validateObject(/* ... */);
 
 isValid(payload);
 //=> true

@@ -1,5 +1,4 @@
 import get from 'get-value';
-import set from 'set-value';
 import ValidatorError from './ValidatorError';
 import {
   isMessage,
@@ -48,20 +47,19 @@ export const validate = async (
 };
 
 /**
- * Validate the whole schema concurrenly executing validators for every property
- * and returning a mirror schema with first error message for every property.
+ * Concurrenly validates an object with an schema. It executes validators for
+ * deep properties and returns a message schema.
  * @param object
  * @param schema
  */
-export const validateSchema = async <T extends ValidatorSchema> (
+export const validateObject = async <T extends ValidatorSchema> (
   object: object,
   schema: T,
 ): Promise<MessageSchema<T>> => {
   const errors = Object.create(null) as MessageSchema<T>;
   const toResolution = async (property: string): Promise<void> => {
     const value = get(object, property);
-    const error = await validate(value, schema[property]);
-    set(errors, property, error);
+    errors[property] = await validate(value, schema[property]);
   };
   await Promise.all(keys(schema).map(toResolution));
   return errors;
