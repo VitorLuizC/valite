@@ -1,5 +1,12 @@
 import test from 'ava';
-import { validate, ValidatorError, isValid, validateSchema } from '../';
+import {
+  isValid,
+  validate,
+  validateObject,
+  Validator,
+  ValidatorError,
+  ValidatorSchema,
+} from '../';
 
 const has = Function.call.bind(Object.prototype.hasOwnProperty);
 const validators = [
@@ -34,16 +41,66 @@ test('empty validator message throws a ValidatorError', async (context) => {
 
 test('isValid check if value/object is valid', async (context) => {
   const error = await validate(undefined, validators);
-  const errors = await validateSchema({ name: null }, { name: validators });
+  const errors = await validateObject({ name: null }, { name: validators });
   context.true(isValid(errors));
   context.false(isValid(error));
 });
 
-test('validateProperties returns an error schema', async (context) => {
-  const errors = await validateSchema({}, { name: validators });
-  context.true(errors && typeof errors === 'object', 'is not even an object');
-  context.true(has(errors, 'name'));
-  context.is(errors.name, 'value is not null');
+/**
+ * Tests for `validateObject` function.
+ */
+
+const SUBSCRIBE_VALIDATORS: ValidatorSchema = {
+  'user.username': [
+    (value) => !!value.trim() || 'Username is required',
+    ((value) => new Promise((resolve) => {
+      const message = value !== 'VitorLuizC' || 'Username is repeated.';
+      setTimeout((_) => resolve(message as true | string), 300);
+    })) as Validator
+  ],
+  'user.password': [
+    (value) => !!value.trim() || 'Password is required',
+    (value) => value !== '1234' || 'Password is too weak'
+  ],
+  'terms': [
+    (value) => !!value || 'Can\'t subscribe without accept terms.'
+  ]
+};
+
+test('validateObject: uses schema to validate object', async (context) => {
+  const valuesA = {
+    user: {
+      username: 'haxz_vitor', // This is my PlayStation Account username, please
+      password: '0000'        // play Monster Hunter World with me.
+    },
+    terms: true
+  };
+
+  const errorsA = await validateObject(valuesA, SUBSCRIBE_VALIDATORS);
+
+  context.true(isValid(errorsA));
+  context.deepEqual(errorsA, {
+    'user.username': null,
+    'user.password': null,
+    'terms': null
+  });
+
+  const valuesB = {
+    user: {
+      username: 'VitorLuizC',
+      password: '1234'
+    },
+    terms: false
+  };
+
+  const errorsB = await validateObject(valuesB, SUBSCRIBE_VALIDATORS);
+
+  context.false(isValid(errorsB));
+  context.deepEqual(errorsB, {
+    'user.username': 'Username is repeated.',
+    'user.password': 'Password is too weak',
+    'terms': 'Can\'t subscribe without accept terms.'
+  });
 });
 
 test('Benchmark: Promise.All is faster than a chain', async (context) => {
@@ -52,7 +109,7 @@ test('Benchmark: Promise.All is faster than a chain', async (context) => {
     name: null,
     email: null
   };
-  const errors = await validateSchema(user, {
+  const errors = await validateObject(user, {
     name: validators,
     email: validators
   });
