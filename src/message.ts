@@ -16,7 +16,7 @@ export type MessageSchema <T = any> = { [property in keyof T]: Message; };
  */
 export const isMessage = (
   value: any,
-): value is Message => {
+): value is string => {
   if (typeof value !== 'string' && value !== true)
     throw new ValidatorError('Validator should return `true` or a message instead.');
   if (typeof value === 'string' && !value.trim())
