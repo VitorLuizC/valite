@@ -1,6 +1,6 @@
 {
   "name": "valite",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Concurrently execute your validators in a simple, practical and light validator engine.",
   "cdn": "dist/valite.min.js",
   "main": "dist/valite.cjs.js",
