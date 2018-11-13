@@ -1,26 +1,12 @@
 {
   "compilerOptions": {
     "lib": [ "es2015" ],
-    "target": "es2017",
-
-    // Module resolution settings.
-    "module": "es2015",
+    "target": "es2015",
+    "esModuleInterop": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-
-    // Type definiton settings.
     "declaration": true,
     "declarationDir": "types/",
-
-    // TypeScript check settings.
-    "alwaysStrict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
-    "forceConsistentCasingInFileNames": true,
+    "strict": true
   },
   "exclude": [ "test/", "dist/", "types/" ]
 }
