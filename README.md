@@ -1,6 +1,6 @@
 # valite
 
-[![Build Status][ci-badge]][ci]
+[![Build Status](https://travis-ci.org/VitorLuizC/valite.svg?branch=master)](https://travis-ci.org/VitorLuizC/valite)
 
 Concurrently execute your validators in a simple, practical and light validator engine.
 
@@ -43,7 +43,7 @@ const isName: Validator = (name: string) => Boolean(name.trim()) || 'Name should
 
 #### `validate`
 
-Executes validators **concurrently** and returns first obtained message or `null`.
+Executes validators and returns first obtained message or `null`.
 
 ```js
 const mail = 'hi@capiwara.com.br';
@@ -64,7 +64,7 @@ validate(mail, [
 
 #### `validateObject`
 
-Validates an `object` using validators from a schema and returns them in same structure.
+**Concurrently** validates an `object` using validators from a schema and returns them in same structure.
 
 > Structure supports _dot notation_ for deep properties.
 
@@ -108,10 +108,4 @@ isValid(payload);
 
 ## License
 
-Released under MIT license. You can see it [here][license].
-
-<!-- Links -->
-
-[license]: ./LICENSE.md
-[ci]: https://travis-ci.org/VitorLuizC/valite
-[ci-badge]: https://travis-ci.org/VitorLuizC/valite.svg?branch=master
+Released under [MIT License](./LICENSE.md).
