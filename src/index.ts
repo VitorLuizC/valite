@@ -6,23 +6,14 @@ import {
   Message,
   MessageSchema,
 } from './message';
+import { keys } from './key';
 
 export { Message, MessageSchema, ValidatorError };
 
 /**
- * A key from an object.
- */
-type Key <T = any> = Extract<keyof T, string>;
-
-/**
- * Get an Array of keys from a given object.
- */
-const keys = Object.keys as <T = any> (object: T) => Key<T>[];
-
-/**
  * A function which receives a value and return true or an error message.
  */
-export type Validator = (value: any) => string | true | Promise<string | true>;
+export type Validator = (value: unknown) => string | true | Promise<string | true>;
 
 /**
  * Sequentially executes validators over the value. Returns the first error
@@ -31,8 +22,8 @@ export type Validator = (value: any) => string | true | Promise<string | true>;
  * @param validators
  */
 export const validate = (
-  value: any,
-  [validator, ...validators]: Array<Validator> = []
+  value: unknown,
+  [validator, ...validators]: Validator[] = []
 ): Promise<Message> => (
   typeof validator !== 'function'
     ? Promise.resolve(null)
@@ -43,7 +34,7 @@ export const validate = (
 /**
  * A schema of property names and their validators.
  */
-export type ValidatorSchema = { [property: string]: Array<Validator>; };
+export type ValidatorSchema = Record<string, Validator[]>;
 
 /**
  * Concurrenly validates an object with an schema. It executes validators for
@@ -51,7 +42,7 @@ export type ValidatorSchema = { [property: string]: Array<Validator>; };
  * @param object
  * @param schema
  */
-export const validateObject = <T extends ValidatorSchema> (
+export const validateObject = <T extends ValidatorSchema>(
   object: object,
   schema: T,
 ): Promise<MessageSchema<T>> => {
