@@ -2,13 +2,13 @@
   "name": "valite",
   "version": "0.7.0",
   "description": "Concurrently execute your validators in a simple, practical and light validator engine.",
-  "cdn": "dist/valite.min.js",
-  "main": "dist/valite.cjs.js",
+  "cdn": "dist/index.umd.min.js",
+  "main": "dist/index.js",
   "types": "types/index.d.ts",
-  "unpkg": "dist/valite.min.js",
-  "module": "dist/valite.es.js",
-  "jsdelivr": "dist/valite.min.js",
-  "umd:main": "dist/valite.js",
+  "unpkg": "dist/index.umd.min.js",
+  "module": "dist/index.mjs",
+  "jsdelivr": "dist/index.umd.min.js",
+  "umd:main": "dist/index.umd.js",
   "files": [
     "dist/",
     "types/",
@@ -19,7 +19,7 @@
     "test:transpile": "tsc test/index.ts --lib es2017",
     "test": "npm run build && npm run test:transpile && ava",
     "build:transpile": "tsc",
-    "build:bundle": "bili src/index.js --formats es,cjs,umd,umd-min --banner --js buble",
+    "build:bundle": "bili src/index.js --format es,cjs,umd,umd-min --banner --module-name valite --minimal",
     "build": "npm run build:transpile && npm run build:bundle",
     "prepare": "npm run build && npm run test"
   },
@@ -45,9 +45,9 @@
   "homepage": "https://github.com/VitorLuizC/valite#readme",
   "devDependencies": {
     "@types/get-value": "^3.0.0",
-    "ava": "^0.25.0",
-    "bili": "^3.3.4",
-    "typescript": "^3.1.6"
+    "ava": "^1.3.1",
+    "bili": "^4.7.1",
+    "typescript": "^3.3.4000"
   },
   "dependencies": {
     "get-value": "^3.0.1"

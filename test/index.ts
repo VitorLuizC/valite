@@ -29,14 +29,14 @@ test('unexpected validator return throws a ValidatorError', async (context) => {
   const validators = [
     (value) => (false) as true | '', // false is unexpected.
   ];
-  await context.throws(validate(0, validators), ValidatorError)
+  await context.throwsAsync(validate(0, validators), ValidatorError)
 });
 
 test('empty validator message throws a ValidatorError', async (context) => {
   const validators = [
     (value) => value || ''
   ];
-  await context.throws(validate(0, validators), ValidatorError)
+  await context.throwsAsync(validate(0, validators), ValidatorError)
 });
 
 test('isValid check if value/object is valid', async (context) => {
