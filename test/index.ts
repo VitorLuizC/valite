@@ -52,14 +52,14 @@ test('isValid check if value/object is valid', async (context) => {
 
 const SUBSCRIBE_VALIDATORS: ValidatorSchema = {
   'user.username': [
-    (value) => !!value.trim() || 'Username is required',
+    (value: string) => !!value.trim() || 'Username is required',
     ((value) => new Promise((resolve) => {
       const message = value !== 'VitorLuizC' || 'Username is repeated.';
       setTimeout((_) => resolve(message as true | string), 300);
     })) as Validator
   ],
   'user.password': [
-    (value) => !!value.trim() || 'Password is required',
+    (value: string) => !!value.trim() || 'Password is required',
     (value) => value !== '1234' || 'Password is too weak'
   ],
   'terms': [
